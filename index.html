@@ -199,6 +199,8 @@ body.light .hdr{background:rgba(242,244,248,.95)}
 .coord-prog-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:6px}
 .coord-prog-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
 .coord-prog-label{display:flex;justify-content:space-between;font-size:10px;font-family:var(--mono);color:var(--text2)}
+.coord-clickable{transition:opacity .15s,transform .12s;}
+.coord-clickable:hover{opacity:.75;transform:scale(1.03);}
 
 /* ── CHARTS GRID ── */
 .cg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
@@ -357,7 +359,7 @@ body.light .dash-dept-sel option{background:#fff}
 .fuel-card-sub{font-size:11px;color:var(--text2);margin-top:3px}
 
 @media(max-width:700px){.hdr{padding:0 12px}.wrap{padding:12px 10px 40px}.kv{font-size:1.4rem}.mg{grid-template-columns:1fr}.coord-grid{grid-template-columns:1fr}}
-@media print{body>*{display:none!important}.mo{display:block!important;position:static!important;background:none!important;backdrop-filter:none!important;padding:0!important}.mo .md{max-height:none!important;border:none!important;width:100%!important}.mo .mh{display:flex!important}.mo .mnav,.mo .mx,.mo .print-btn{display:none!important}body,*{background:#fff!important;color:#000!important}}
+.amtb{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}.amtr{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border)}.amtr:last-child{border-bottom:none}.amtr.tot{background:rgba(0,212,255,.05)}.amtr.tot .aml{font-weight:700;color:var(--text)}.amtr.tot .amv{font-size:1.05rem;font-weight:700;color:var(--teal)}.aml{font-size:11px;font-family:var(--mono);color:var(--text2)}.amv{font-size:13px;font-family:var(--mono);color:var(--text)}@media print{body>*{display:none!important}.mo{display:block!important;position:static!important;background:none!important;backdrop-filter:none!important;padding:0!important}.mo .md{display:block!important;max-height:none!important;border:none!important;width:100%!important;max-width:100%!important}.mo .mh{display:flex!important}.mo .mbody{display:block!important}.mo .mnav,.mo .mx,.mo .print-btn{display:none!important}body,*{background:#fff!important;color:#000!important;border-color:#ccc!important}.badge.s-done{background:#d1fae5!important;color:#065f46!important;border:none!important}.badge.s-inprogress{background:#fef3c7!important;color:#92400e!important;border:none!important}.badge.s-onhold{background:#fee2e2!important;color:#991b1b!important;border:none!important}.badge.s-allocated{background:#f3f4f6!important;color:#374151!important;border:none!important}.badge.s-notapplicable{background:#fff7ed!important;color:#92400e!important;border:none!important}.badge.s-notyetapproved{background:#f3f4f6!important;color:#374151!important;border:none!important}.badge.s-notnecessary{background:#eff6ff!important;color:#1e40af!important;border:none!important}.amtb{border:1px solid #ccc!important}.amtr{border-bottom:1px solid #ccc!important}.amtr.tot .amv{color:#0891b2!important}}
 </style>
 </head>
 <body>
@@ -446,6 +448,9 @@ body.light .dash-dept-sel option{background:#fff}
     <span class="qc" data-q="pending" onclick="qf('pending')">⏳ Pending <span id="qcp">—</span></span>
     <span class="qc" data-q="inprogress" onclick="qf('inprogress')">⚙ In Progress <span id="qci">—</span></span>
     <span class="qc" data-q="onhold" onclick="qf('onhold')">⏸ On Hold <span id="qco">—</span></span>
+    <span class="qc" data-q="notapplicable" onclick="qf('notapplicable')">⊘ Not Applicable <span id="qcna">—</span></span>
+    <span class="qc" data-q="notnecessary" onclick="qf('notnecessary')">✗ Not Necessary <span id="qcnn">—</span></span>
+    <span class="qc" data-q="notyetapproved" onclick="qf('notyetapproved')">⏺ Not Yet Approved <span id="qcnya">—</span></span>
     <div class="dash-toggle on" id="dashToggle" onclick="toggleDashPanel()">
       <div class="tog-track"><div class="tog-thumb"></div></div>
       <span class="dash-toggle-label">Dashboard</span>
@@ -1068,11 +1073,13 @@ function sC(s){
   return'badge s-other';
 }
 function isCompleted(s){var t=(s||'').trim();return/^done$/i.test(t)||/complet|resolved|closed|fixed/i.test(t);}
-function isPending(s){var t=(s||'').trim();return/^(allocated|not yet approved|not necessary)$/i.test(t)||/pending|waiting|submitted/i.test(t);}
+function isPending(s){var t=(s||'').trim();return/^allocated$/i.test(t)||/pending|waiting|submitted/i.test(t);}
 function isInProgress(s){var t=(s||'').trim();return/^in progress$/i.test(t)||/in[- ]?progress|ongoing|active|started/i.test(t);}
 function isOnHold(s){var t=(s||'').trim();return/^on hold$/i.test(t)||/on[- ]?hold/i.test(t);}
 function isOverdue(s){var t=(s||'').trim();return/overdue|escalat/i.test(t);}
-function isNotApplicable(s){var t=(s||'').trim();return/^(not applicable|not necessary)$/i.test(t);}
+function isNotApplicable(s){var t=(s||'').trim();return/^not applicable$/i.test(t);}
+function isNotNecessary(s){var t=(s||'').trim();return/^not necessary$/i.test(t);}
+function isNotYetApproved(s){var t=(s||'').trim();return/^not yet approved$/i.test(t)||/not yet approv/i.test(t.toLowerCase());}
 
 function fM(n,compact){if(!n&&n!==0)return'—';var a=Math.abs(n);if(compact){if(a>=1e9)return(n/1e9).toFixed(2)+'B';if(a>=1e6)return(n/1e6).toFixed(2)+'M';if(a>=1e3)return(n/1e3).toFixed(1)+'K';}return Math.round(n).toLocaleString();}
 function fD(s){if(!s)return'—';var m=s.match(/Date\((\d+),(\d+),(\d+)\)/);if(m){var d=new Date(+m[1],+m[2],+m[3]);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}return s;}
@@ -1114,6 +1121,14 @@ function buildDashData(){
   var stationFiltered=deselStations.size>0;
   var hasFilter=fromD||toD||coordFiltered||stationFiltered;
   DASH_DATA=RAW.filter(function(r){
+    // Scope dashboard to active quick filter
+    if(AQ==='completed'&&!isCompleted(v(r,C.STATUS)))return false;
+    if(AQ==='pending'&&!isPending(v(r,C.STATUS)))return false;
+    if(AQ==='inprogress'&&!isInProgress(v(r,C.STATUS)))return false;
+    if(AQ==='onhold'&&!isOnHold(v(r,C.STATUS)))return false;
+    if(AQ==='notapplicable'&&!isNotApplicable(v(r,C.STATUS)))return false;
+    if(AQ==='notnecessary'&&!isNotNecessary(v(r,C.STATUS)))return false;
+    if(AQ==='notyetapproved'&&!isNotYetApproved(v(r,C.STATUS)))return false;
     if(coordFiltered&&deselCoords.has(v(r,C.COORD)))return false;
     if(stationFiltered&&deselStations.has(v(r,C.STATION)))return false;
     if(fromD||toD){var rd=rowDate(r,C.TS);if(!rd)return false;if(fromD&&rd<fromD)return false;if(toD&&rd>toD)return false;}
@@ -1143,7 +1158,10 @@ function bKPIs(){
   var coords=new Set();DASH_DATA.forEach(function(r){var c=v(r,C.COORD);if(c)coords.add(c);});
   // Avg resolution: compare month/year or just count done
 
-  g('qca',tot);g('qcc',comp);g('qcp',pend);g('qci',inprog);g('qco',ovd); // on hold count
+  var notAppl=DASH_DATA.filter(function(r){return isNotApplicable(v(r,C.STATUS));}).length;
+  var notNec=DASH_DATA.filter(function(r){return isNotNecessary(v(r,C.STATUS));}).length;
+  var notYetApp=DASH_DATA.filter(function(r){return isNotYetApproved(v(r,C.STATUS));}).length;
+  g('qca',tot);g('qcc',comp);g('qcp',pend);g('qci',inprog);g('qco',ovd);g('qcna',notAppl);g('qcnn',notNec);g('qcnya',notYetApp);
   g('kT',tot);g('kTs',tot+' total maintenance tasks');
   g('kComp',compPct+'%');g('kComps',comp+' of '+tot+' tasks completed');
   g('kP',pend);g('kPs',pend+' awaiting action');
@@ -1159,18 +1177,65 @@ function bKPIs(){
 function g(id,val){var el=document.getElementById(id);if(el)el.textContent=val;}
 
 /* ═══════════════════════════════════════════════
+   COORDINATOR CARD CLICK NAVIGATION
+═══════════════════════════════════════════════ */
+// Delegated listener — attached once, handles all current and future coord cards
+document.addEventListener('click', function(e){
+  var el = e.target.closest('.coord-clickable');
+  if(!el) return;
+  var coord = el.getAttribute('data-coord');
+  var status = el.getAttribute('data-status') || null;
+  if(coord) navToCoordinator(coord, status || null);
+});
+
+function navToCoordinator(coordName, statusFilter){
+  // Reset all quick filters
+  qf('all');
+  // Clear coord MSD filter and set only this coordinator
+  // msd-coord is allByDefault:true, so selected = deselected set
+  // To show only coordName: deselect everyone EXCEPT coordName
+  var state = MSD['msd-coord'];
+  state.selected.clear();
+  state.items.forEach(function(item){
+    if(item !== coordName) state.selected.add(item);
+  });
+  msdRenderList('msd-coord','');
+  msdUpdateLabel('msd-coord');
+  // Apply status quick filter if specified
+  if(statusFilter){
+    AQ = statusFilter;
+    document.querySelectorAll('.qc').forEach(function(c){c.className='qc';});
+    var el = document.querySelector('.qc[data-q="'+statusFilter+'"]');
+    if(el){
+      var cls = statusFilter==='completed'?'ag':statusFilter==='pending'?'am':statusFilter==='inprogress'?'ap':'ar';
+      el.classList.add(cls);
+    }
+  }
+  // Re-filter and scroll to table
+  onFlt();
+  buildDashData();bCharts();bKPIs();
+  var tbl = document.querySelector('.tc');
+  if(tbl) tbl.scrollIntoView({behavior:'smooth', block:'start'});
+  showToast('info', coordName, statusFilter ? 'Filtered to '+statusFilter+' tasks' : 'Showing all tasks for coordinator');
+}
+
+/* ═══════════════════════════════════════════════
    COORDINATOR CARDS
 ═══════════════════════════════════════════════ */
 function buildCoordCards(){
   var map={};
   DASH_DATA.forEach(function(r){
     var coord=v(r,C.COORD)||'Unassigned';
-    if(!map[coord])map[coord]={name:coord,total:0,completed:0,pending:0,inprogress:0,cost:0,stations:new Set(),types:new Set()};
+    if(!map[coord])map[coord]={name:coord,total:0,completed:0,pending:0,inprogress:0,onhold:0,notapplicable:0,notnecessary:0,notyetapproved:0,cost:0,stations:new Set(),types:new Set()};
     map[coord].total++;
     var st=v(r,C.STATUS);
     if(isCompleted(st))map[coord].completed++;
     else if(isPending(st))map[coord].pending++;
     else if(isInProgress(st))map[coord].inprogress++;
+    else if(isOnHold(st))map[coord].onhold++;
+    else if(isNotApplicable(st))map[coord].notapplicable++;
+    else if(isNotNecessary(st))map[coord].notnecessary++;
+    else if(isNotYetApproved(st))map[coord].notyetapproved++;
     map[coord].cost+=totalCost(r);
     var stn=v(r,C.STATION);if(stn)map[coord].stations.add(stn);
     var tp=v(r,C.TYPE);if(tp)map[coord].types.add(tp);
@@ -1187,12 +1252,18 @@ function buildCoordCards(){
       +'<div class="coord-header">'
         +'<div class="coord-ava" style="background:'+color+';--ava-c:'+color+'">'+esc(initials)+'</div>'
         +'<div class="coord-info"><div class="coord-name">'+esc(coord.name)+'</div><div class="coord-role">'+coord.stations.size+' station(s) · '+coord.types.size+' type(s)</div></div>'
-        +'<div class="coord-badge">'+coord.total+' tasks</div>'
+        +'<div class="coord-badge coord-clickable" data-coord="'+esc(coord.name)+'" data-status="" title="Show all tasks">'+coord.total+' tasks ↗</div>'
       +'</div>'
-      +'<div class="coord-stats">'
-        +'<div class="cstat"><div class="cstat-v" style="color:var(--green)">'+coord.completed+'</div><div class="cstat-l">Done</div></div>'
-        +'<div class="cstat"><div class="cstat-v" style="color:var(--amber)">'+coord.pending+'</div><div class="cstat-l">Pending</div></div>'
-        +'<div class="cstat"><div class="cstat-v" style="color:var(--accent)">'+coord.inprogress+'</div><div class="cstat-l">In Progress</div></div>'
+      +'<div class="coord-stats" style="grid-template-columns:repeat(4,1fr)">'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="completed" title="Show completed tasks"><div class="cstat-v" style="color:var(--green)">'+coord.completed+'</div><div class="cstat-l">Done ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="pending" title="Show pending tasks"><div class="cstat-v" style="color:var(--amber)">'+coord.pending+'</div><div class="cstat-l">Pending ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="inprogress" title="Show in-progress tasks"><div class="cstat-v" style="color:var(--accent)">'+coord.inprogress+'</div><div class="cstat-l">In Progress ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="onhold" title="Show on-hold tasks"><div class="cstat-v" style="color:var(--red)">'+coord.onhold+'</div><div class="cstat-l">On Hold ↗</div></div>'
+      +'</div>'
+      +'<div class="coord-stats" style="grid-template-columns:repeat(3,1fr);margin-top:6px">'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notapplicable" title="Show not-applicable tasks"><div class="cstat-v" style="color:#ff9e00">'+coord.notapplicable+'</div><div class="cstat-l">Not Appl. ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notnecessary" title="Show not-necessary tasks"><div class="cstat-v" style="color:#6fa8dc">'+coord.notnecessary+'</div><div class="cstat-l">Not Nec. ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notyetapproved" title="Show not-yet-approved tasks"><div class="cstat-v" style="color:#9aa0ab">'+coord.notyetapproved+'</div><div class="cstat-l">Not Approv. ↗</div></div>'
       +'</div>'
       +'<div class="coord-prog-bar"><div class="coord-prog-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div>'
       +'<div class="coord-prog-label"><span>Completion Rate</span><span style="color:'+barColor+'">'+pct+'%</span></div>'
@@ -1614,8 +1685,14 @@ function qf(q){
   AQ=q;
   document.querySelectorAll('.qc').forEach(function(c){c.className='qc';});
   var el=document.querySelector('.qc[data-q="'+q+'"]');
-  if(el)el.classList.add(q==='all'?'aa':q==='completed'?'ag':q==='pending'?'am':q==='inprogress'?'ap':q==='onhold'?'ar':'ar');
+  if(el){
+    var cls=q==='all'?'aa':q==='completed'?'ag':q==='pending'?'am':q==='inprogress'?'ap':q==='onhold'?'ar':
+            q==='notapplicable'?'am':q==='notnecessary'?'am':q==='notyetapproved'?'am':'ar';
+    el.classList.add(cls);
+  }
   onFlt();
+  // Quick filters also scope the dashboard
+  buildDashData();bCharts();bKPIs();
 }
 
 function onFlt(){
@@ -1635,6 +1712,9 @@ function onFlt(){
     if(AQ==='inprogress'&&!isInProgress(v(r,C.STATUS)))return false;
     if(AQ==='onhold'&&!isOnHold(v(r,C.STATUS)))return false;
     if(AQ==='overdue'&&!isOverdue(v(r,C.STATUS)))return false;
+    if(AQ==='notapplicable'&&!isNotApplicable(v(r,C.STATUS)))return false;
+    if(AQ==='notnecessary'&&!isNotNecessary(v(r,C.STATUS)))return false;
+    if(AQ==='notyetapproved'&&!isNotYetApproved(v(r,C.STATUS)))return false;
     // MSD filters: allByDefault=true so selected = deselected set.
     // Exclude row if its value IS in the deselected set.
     // Empty deselected set = nothing filtered out = all rows pass.
@@ -1711,7 +1791,7 @@ function openMo(idx){
   document.getElementById('mps').textContent=(idx+1)+'/'+RAW.length;
   document.getElementById('mpv').disabled=idx===0;
   document.getElementById('mnx').disabled=idx===RAW.length-1;
-  document.getElementById('mtt').textContent=(v(r,C.ASSET)||'Maintenance Task')+(v(r,C.STATION)?' @ '+v(r,C.STATION):'');
+  var _stn=v(r,C.STATION),_cat=v(r,C.ASSET_CAT),_ref=v(r,C.REF);var _titleParts=[_stn,_cat,_ref].filter(Boolean);document.getElementById('mtt').textContent=_titleParts.length?_titleParts.join(' | '):(v(r,C.ASSET)||'Maintenance Task');
   var mat=num(r,C.MATERIALS),trans=num(r,C.TRANSPORT),lab=num(r,C.LABOUR),allow=num(r,C.ALLOWANCES),fuel=fuelCost(r);
   var grandTotal=mat+trans+lab+allow+fuel||totalCost(r);
   var html='<div class="ms"><div class="mst">Task Details</div><div class="mg">'
@@ -1736,14 +1816,14 @@ function openMo(idx){
     
     +'</div></div>'
     +'<div class="ms"><div class="mst">Cost Breakdown</div>'
-    +'<table class="cost-table">'
-    +'<tr><td>Materials</td><td>UGX '+fM(mat)+'</td></tr>'
-    +'<tr><td>Transport</td><td>UGX '+fM(trans)+'</td></tr>'
-    +'<tr><td>Labour</td><td>UGX '+fM(lab)+'</td></tr>'
-    +'<tr><td>Allowances</td><td>UGX '+fM(allow)+'</td></tr>'
-    +(fuel?'<tr><td>Fuel Cost</td><td>UGX '+fM(fuel)+'</td></tr>':'')
-    +'<tr class="total"><td>Total Cost</td><td>UGX '+fM(grandTotal||totalCost(r))+'</td></tr>'
-    +'</table></div>'
+    +'<div class="amtb">'
+    +'<div class="amtr"><span class="aml">Materials</span><span class="amv">UGX '+fM(mat)+'</span></div>'
+    +'<div class="amtr"><span class="aml">Transport</span><span class="amv">UGX '+fM(trans)+'</span></div>'
+    +'<div class="amtr"><span class="aml">Labour</span><span class="amv">UGX '+fM(lab)+'</span></div>'
+    +'<div class="amtr"><span class="aml">Allowances</span><span class="amv">UGX '+fM(allow)+'</span></div>'
+    +(fuel?'<div class="amtr"><span class="aml">Fuel Cost</span><span class="amv">UGX '+fM(fuel)+'</span></div>':'')
+    +'<div class="amtr tot"><span class="aml">Total Cost</span><span class="amv">UGX '+fM(grandTotal||totalCost(r))+'</span></div>'
+    +'</div></div>'
     +(v(r,C.FUEL_QTY)||v(r,C.FUEL_TYPE)?'<div class="ms"><div class="mst">Fuel Details</div><div class="mg">'
     +'<div><div class="mfl">Fuel Type</div><div class="mfv">'+esc(v(r,C.FUEL_TYPE)||'—')+'</div></div>'
     +'<div><div class="mfl">Quantity (L)</div><div class="mfv">'+esc(v(r,C.FUEL_QTY)||'—')+'</div></div>'
