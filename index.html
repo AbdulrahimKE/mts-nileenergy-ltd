@@ -104,10 +104,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .toast-bar.c-green{background:var(--green)}.toast-bar.c-amber{background:var(--amber)}.toast-bar.c-red{background:var(--red)}.toast-bar.c-accent{background:var(--accent)}
 
 /* ── HEADER ── */
-.hdr{position:sticky;top:0;z-index:100;background:rgba(8,11,16,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.hdr{position:sticky;top:0;z-index:100;background:rgba(8,11,16,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
 body.light .hdr{background:rgba(242,244,248,.95)}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:.95rem;letter-spacing:-.01em}
-.logo-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:1rem;letter-spacing:-.01em}
+.logo-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:transparent;flex-shrink:0}
 .hdiv{width:1px;height:16px;background:var(--border2);margin:0 4px}
 .lrt{font-size:11px;font-family:var(--mono);color:var(--text3);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .lrt-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:inline-block}
@@ -201,6 +201,31 @@ body.light .hdr{background:rgba(242,244,248,.95)}
 .coord-prog-label{display:flex;justify-content:space-between;font-size:10px;font-family:var(--mono);color:var(--text2)}
 .coord-clickable{transition:opacity .15s,transform .12s;}
 .coord-clickable:hover{opacity:.75;transform:scale(1.03);}
+.tbtn-active{border-color:var(--accent)!important;color:var(--accent)!important;background:rgba(79,142,247,0.1)!important}
+.col-tog{
+  padding:4px 11px 4px 6px;border-radius:6px;font-size:11px;font-weight:600;
+  border:1px solid var(--border2);background:var(--bg3);color:var(--text3);
+  cursor:pointer;font-family:var(--mono);transition:all .15s;
+  text-decoration:line-through;opacity:.45;
+  display:inline-flex;align-items:center;gap:5px;user-select:none;
+}
+.col-tog.col-tog-on{
+  background:rgba(79,142,247,.13);border-color:rgba(79,142,247,.5);
+  color:var(--accent);text-decoration:none;opacity:1;
+}
+.col-tog:hover{border-color:var(--accent);opacity:1;}
+.col-tog.drag-over{border-color:var(--teal)!important;background:rgba(34,211,238,.13)!important;}
+.col-drag-handle{
+  font-size:10px;color:var(--text3);cursor:grab;line-height:1;
+  letter-spacing:-1px;opacity:.6;flex-shrink:0;
+}
+.col-tog.col-tog-on .col-drag-handle{color:var(--accent);opacity:.7;}
+#colPanel{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);
+  padding:12px 14px;margin-bottom:12px;
+  animation:cpIn .18s ease both;
+}
+@keyframes cpIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
 
 /* ── CHARTS GRID ── */
 .cg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
@@ -221,7 +246,7 @@ body.light .hdr{background:rgba(242,244,248,.95)}
 
 /* ── TABLE ── */
 .tb{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.sb{position:relative;flex:1;min-width:180px}
+.sb{position:relative;flex:1;min-width:180px}.sri-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:11px;line-height:1;padding:3px 5px;border-radius:4px;transition:color .15s,background .15s;display:none}.sri-clear:hover{color:var(--text);background:var(--bg3)}
 .sb input{width:100%;padding:8px 12px 8px 32px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:var(--mono);font-size:12px;outline:none}
 .sb input:focus{border-color:var(--accent)}
 .sb input::placeholder{color:var(--text3)}
@@ -405,7 +430,7 @@ body.light .dash-dept-sel option{background:#fff}
 <header class="hdr">
   <div style="display:flex;align-items:center;gap:10px">
     <div class="logo">
-      <div class="logo-icon"><img src="https://drive.google.com/thumbnail?id=1pw-zQsYf25deA1GxfxPVX0i1J8jU34bx&sz=s400" alt="Nile Energy" style="width:32px;height:32px;object-fit:contain;object-position:center" onerror="this.parentNode.innerHTML='&#9881;'"></div>
+      <div class="logo-icon"><img src="https://drive.google.com/thumbnail?id=1pw-zQsYf25deA1GxfxPVX0i1J8jU34bx&sz=s400" alt="Nile Energy" style="width:48px;height:48px;object-fit:contain;object-position:center" onerror="this.parentNode.innerHTML='&#9881;'"></div>
       MTS | Nile Energy
     </div>
     <div class="hdiv"></div>
@@ -610,13 +635,15 @@ body.light .dash-dept-sel option{background:#fff}
     <div class="kb-hint"><span>Keys:</span><kbd>←</kbd><kbd>→</kbd> navigate <kbd>Esc</kbd> close</div>
   </div>
   <div class="tb">
-    <div class="sb"><span class="si">⌕</span><input type="text" id="sri" placeholder="Search requester, asset, station, coordinator…" oninput="onFlt()"></div>
+    <div class="sb"><span class="si">⌕</span><input type="text" id="sri" placeholder="Search anything — ref, asset, station, coordinator, fault, provider…" oninput="onSriInput()" style="padding-right:28px"><button class="sri-clear" id="sriClear" onclick="clearSri()" title="Clear search">✕</button></div>
     <div class="msd" id="msd-status"><div class="msd-btn" onclick="msdToggle('msd-status')"><span id="msd-status-label">All Statuses</span><span class="msd-arrow">▾</span></div><div class="msd-panel" id="msd-status-panel"><div class="msd-search"><input type="text" placeholder="Search…" oninput="msdSearch('msd-status',this.value)"></div><div class="msd-list" id="msd-status-list"></div><div class="msd-footer"><span class="msd-count" id="msd-status-count">All selected</span><button class="msd-clear" onclick="msdClearToggle('msd-status')">Deselect all</button><button class="msd-ok" onclick="msdOk('msd-status')">Apply</button></div></div></div>
     <div class="msd" id="msd-coord"><div class="msd-btn" onclick="msdToggle('msd-coord')"><span id="msd-coord-label">All Coordinators</span><span class="msd-arrow">▾</span></div><div class="msd-panel" id="msd-coord-panel"><div class="msd-search"><input type="text" placeholder="Search…" oninput="msdSearch('msd-coord',this.value)"></div><div class="msd-list" id="msd-coord-list"></div><div class="msd-footer"><span class="msd-count" id="msd-coord-count">All selected</span><button class="msd-clear" onclick="msdClearToggle('msd-coord')">Deselect all</button><button class="msd-ok" onclick="msdOk('msd-coord')">Apply</button></div></div></div>
     <div class="msd" id="msd-type"><div class="msd-btn" onclick="msdToggle('msd-type')"><span id="msd-type-label">All Types</span><span class="msd-arrow">▾</span></div><div class="msd-panel" id="msd-type-panel"><div class="msd-search"><input type="text" placeholder="Search…" oninput="msdSearch('msd-type',this.value)"></div><div class="msd-list" id="msd-type-list"></div><div class="msd-footer"><span class="msd-count" id="msd-type-count">All selected</span><button class="msd-clear" onclick="msdClearToggle('msd-type')">Deselect all</button><button class="msd-ok" onclick="msdOk('msd-type')">Apply</button></div></div></div>
     <div class="msd" id="msd-station"><div class="msd-btn" onclick="msdToggle('msd-station')"><span id="msd-station-label">All Stations</span><span class="msd-arrow">▾</span></div><div class="msd-panel" id="msd-station-panel"><div class="msd-search"><input type="text" placeholder="Search…" oninput="msdSearch('msd-station',this.value)"></div><div class="msd-list" id="msd-station-list"></div><div class="msd-footer"><span class="msd-count" id="msd-station-count">All selected</span><button class="msd-clear" onclick="msdClearToggle('msd-station')">Deselect all</button><button class="msd-ok" onclick="msdOk('msd-station')">Apply</button></div></div></div>
-    <button class="tbtn" onclick="doExp()">↓ CSV</button>
+    <button class="tbtn" id="colPanelBtn" onclick="toggleColPanel()" title="Show / hide columns">&#9639; Columns</button>
+    <button class="tbtn" onclick="doExp()">&#8595; CSV</button>
   </div>
+  <div id="colPanel" style="display:none"><div style="font-size:10px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Toggle columns — click to show/hide &nbsp;·&nbsp; drag ⋮⋮ to reorder</div><div id="colToggleWrap" style="display:flex;flex-wrap:wrap;gap:7px"></div></div>
   <div class="tc" id="tc"><div class="sbox"><div class="sp"></div><div>Loading…</div></div></div>
 </div>
 
@@ -1252,18 +1279,18 @@ function buildCoordCards(){
       +'<div class="coord-header">'
         +'<div class="coord-ava" style="background:'+color+';--ava-c:'+color+'">'+esc(initials)+'</div>'
         +'<div class="coord-info"><div class="coord-name">'+esc(coord.name)+'</div><div class="coord-role">'+coord.stations.size+' station(s) · '+coord.types.size+' type(s)</div></div>'
-        +'<div class="coord-badge coord-clickable" data-coord="'+esc(coord.name)+'" data-status="" title="Show all tasks">'+coord.total+' tasks ↗</div>'
+        +'<div class="coord-badge coord-clickable" data-coord="'+esc(coord.name)+'" data-status="" title="Show all tasks">'+coord.total+' tasks</div>'
       +'</div>'
       +'<div class="coord-stats" style="grid-template-columns:repeat(4,1fr)">'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="completed" title="Show completed tasks"><div class="cstat-v" style="color:var(--green)">'+coord.completed+'</div><div class="cstat-l">Done ↗</div></div>'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="pending" title="Show pending tasks"><div class="cstat-v" style="color:var(--amber)">'+coord.pending+'</div><div class="cstat-l">Pending ↗</div></div>'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="inprogress" title="Show in-progress tasks"><div class="cstat-v" style="color:var(--accent)">'+coord.inprogress+'</div><div class="cstat-l">In Progress ↗</div></div>'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="onhold" title="Show on-hold tasks"><div class="cstat-v" style="color:var(--red)">'+coord.onhold+'</div><div class="cstat-l">On Hold ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="completed" title="Show completed tasks"><div class="cstat-v" style="color:var(--green)">'+coord.completed+'</div><div class="cstat-l">Done</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="pending" title="Show pending tasks"><div class="cstat-v" style="color:var(--amber)">'+coord.pending+'</div><div class="cstat-l">Pending</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="inprogress" title="Show in-progress tasks"><div class="cstat-v" style="color:var(--accent)">'+coord.inprogress+'</div><div class="cstat-l">In Progress</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="onhold" title="Show on-hold tasks"><div class="cstat-v" style="color:var(--red)">'+coord.onhold+'</div><div class="cstat-l">On Hold</div></div>'
       +'</div>'
       +'<div class="coord-stats" style="grid-template-columns:repeat(3,1fr);margin-top:6px">'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notapplicable" title="Show not-applicable tasks"><div class="cstat-v" style="color:#ff9e00">'+coord.notapplicable+'</div><div class="cstat-l">Not Appl. ↗</div></div>'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notnecessary" title="Show not-necessary tasks"><div class="cstat-v" style="color:#6fa8dc">'+coord.notnecessary+'</div><div class="cstat-l">Not Nec. ↗</div></div>'
-        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notyetapproved" title="Show not-yet-approved tasks"><div class="cstat-v" style="color:#9aa0ab">'+coord.notyetapproved+'</div><div class="cstat-l">Not Approv. ↗</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notapplicable" title="Show not-applicable tasks"><div class="cstat-v" style="color:#ff9e00">'+coord.notapplicable+'</div><div class="cstat-l">Not Appl.</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notnecessary" title="Show not-necessary tasks"><div class="cstat-v" style="color:#6fa8dc">'+coord.notnecessary+'</div><div class="cstat-l">Not Nec.</div></div>'
+        +'<div class="cstat coord-clickable" data-coord="'+esc(coord.name)+'" data-status="notyetapproved" title="Show not-yet-approved tasks"><div class="cstat-v" style="color:#9aa0ab">'+coord.notyetapproved+'</div><div class="cstat-l">Not Approv.</div></div>'
       +'</div>'
       +'<div class="coord-prog-bar"><div class="coord-prog-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div>'
       +'<div class="coord-prog-label"><span>Completion Rate</span><span style="color:'+barColor+'">'+pct+'%</span></div>'
@@ -1304,7 +1331,8 @@ function bCharts(){bStatus();bStation();bType();bTime();bCost();}
 
 function bStatus(){
   var cnt={};DASH_DATA.forEach(function(r){var s=v(r,C.STATUS)||'Unknown';cnt[s]=(cnt[s]||0)+1;});
-  var labels=Object.keys(cnt),data=Object.values(cnt);
+  var sorted=Object.entries(cnt).sort(function(a,b){return b[1]-a[1];});
+  var labels=sorted.map(function(e){return e[0];}),data=sorted.map(function(e){return e[1];});
   var colors=labels.map(function(l){
     var t=l.trim();
     if(isCompleted(t))return'#00e5a0';
@@ -1331,7 +1359,8 @@ function bStation(){
 
 function bType(){
   var cnt={};DASH_DATA.forEach(function(r){var t=v(r,C.TYPE)||'Unknown';cnt[t]=(cnt[t]||0)+1;});
-  var labels=Object.keys(cnt),data=Object.values(cnt);
+  var sorted=Object.entries(cnt).sort(function(a,b){return b[1]-a[1];});
+  var labels=sorted.map(function(e){return e[0];}),data=sorted.map(function(e){return e[1];});
   var colors=['#00d4ff','#00e5a0','#b57bee','#ffb830','#ff8c42','#ff4d6d','#60d394','#4ecdc4'];
   if(CType)CType.destroy();
   CType=new Chart(document.getElementById('cType'),{type:'bar',data:{labels:labels,datasets:[{data:data,backgroundColor:colors.slice(0,labels.length),borderWidth:0,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a8399',font:{size:10}},border:{color:'transparent'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a8399',font:{size:10}},border:{color:'transparent'}}}}});
@@ -1506,8 +1535,19 @@ function msdToggle(id){
 }
 
 function msdOk(id){
-  if(id.indexOf('dmsd-')===0){buildDashData();bKPIs();bCharts();}
-  else{onFlt();}
+  // Mirror coord/station selection between table and dashboard MSDs
+  var _pairs={'msd-coord':'dmsd-coord','msd-station':'dmsd-station',
+               'dmsd-coord':'msd-coord','dmsd-station':'msd-station'};
+  var mirror=_pairs[id];
+  if(mirror&&MSD[mirror]&&MSD[id]){
+    // Copy the selection set to the counterpart
+    MSD[mirror].selected=new Set(MSD[id].selected);
+    MSD[mirror]._snapshot=new Set(MSD[id].selected);
+    msdRenderList(mirror,'');
+    msdUpdateLabel(mirror);
+  }
+  if(id.indexOf('dmsd-')===0){buildDashData();bKPIs();bCharts();onFlt();}
+  else{onFlt();buildDashData();bKPIs();bCharts();}
   // Close without revert — this is a commit
   var panel=document.getElementById(id+'-panel');
   var btn=document.querySelector('#'+id+' .msd-btn');
@@ -1695,6 +1735,19 @@ function qf(q){
   buildDashData();bCharts();bKPIs();
 }
 
+function onSriInput(){
+  var val=document.getElementById('sri').value;
+  var btn=document.getElementById('sriClear');
+  if(btn) btn.style.display=val?'inline-flex':'none';
+  onFlt();
+}
+function clearSri(){
+  var inp=document.getElementById('sri');
+  var btn=document.getElementById('sriClear');
+  if(inp){inp.value='';inp.focus();}
+  if(btn) btn.style.display='none';
+  onFlt();
+}
 function onFlt(){
   var q=document.getElementById('sri').value.toLowerCase().trim();
   // Table MSDs: allByDefault=false → selected = explicitly chosen items, size=0 means no filter
@@ -1726,7 +1779,9 @@ function onFlt(){
     if(q){
       var h=[v(r,C.REQR),v(r,C.STATION),v(r,C.ASSET),v(r,C.ASSET_CAT),
              v(r,C.COORD),v(r,C.REF),v(r,C.FAULT),v(r,C.TYPE),
-             v(r,C.PROVIDER),v(r,C.TECH),v(r,C.RESOLUTION),v(r,C.STATUS)]
+             v(r,C.PROVIDER),v(r,C.TECH),v(r,C.RESOLUTION),v(r,C.STATUS),
+             v(r,C.EMAIL),v(r,C.PHONE),v(r,C.CALL_FREQ),
+             v(r,C.MAT_DESC),v(r,C.NOTES)]
             .join(' ').toLowerCase();
       if(h.indexOf(q)===-1)return false;
     }
@@ -1749,18 +1804,85 @@ var TCOLS=[
   {l:'Resolution',c:C.RESOLUTION},{l:'Total Cost',c:C.TOTAL_COST,f:'$'}
 ];
 
+var _colPanelOpen=false;
+function toggleColPanel(){
+  _colPanelOpen=!_colPanelOpen;
+  var panel=document.getElementById('colPanel');
+  var btn=document.getElementById('colPanelBtn');
+  if(panel)panel.style.display=_colPanelOpen?'block':'none';
+  if(btn)btn.classList.toggle('tbtn-active',_colPanelOpen);
+  if(_colPanelOpen)renderColToggles();
+}
+function saveColPrefs(){
+  try{
+    var hidden=TCOLS.filter(function(tc){return tc.hidden;}).map(function(tc){return tc.l;});
+    var order=TCOLS.map(function(tc){return tc.l;});
+    localStorage.setItem('nile_mts_cols_hidden',JSON.stringify(hidden));
+    localStorage.setItem('nile_mts_cols_order',JSON.stringify(order));
+  }catch(e){}
+}
+function toggleCol(label){
+  var tc=TCOLS.filter(function(t){return t.l===label;})[0];
+  if(tc)tc.hidden=!tc.hidden;
+  saveColPrefs();renderColToggles();renTbl();
+}
+function renderColToggles(){
+  var wrap=document.getElementById('colToggleWrap');
+  if(!wrap)return;
+  wrap.innerHTML=TCOLS.map(function(tc,i){
+    var on=!tc.hidden;
+    return '<button class="col-tog'+(on?' col-tog-on':'')+'" draggable="true" data-col="'+esc(tc.l)+'" data-idx="'+i+'">'
+      +'<span class="col-drag-handle" title="Drag to reorder">⋮⋮</span>'
+      +esc(tc.l)+'</button>';
+  }).join('');
+  wrap.onclick=function(e){
+    var t=e.target;
+    if(t.classList&&t.classList.contains('col-drag-handle'))return;
+    while(t&&t!==wrap){
+      if(t.getAttribute&&t.getAttribute('data-col')){toggleCol(t.getAttribute('data-col'));return;}
+      t=t.parentNode;
+    }
+  };
+  var _dragSrc=null;
+  wrap.querySelectorAll('.col-tog').forEach(function(btn){
+    btn.addEventListener('dragstart',function(e){
+      _dragSrc=this;e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',this.dataset.idx);
+      setTimeout(function(){btn.style.opacity='0.35';},0);
+    });
+    btn.addEventListener('dragend',function(){
+      this.style.opacity='';
+      wrap.querySelectorAll('.col-tog').forEach(function(b){b.classList.remove('drag-over');});
+    });
+    btn.addEventListener('dragover',function(e){
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      if(this!==_dragSrc)this.classList.add('drag-over');
+    });
+    btn.addEventListener('dragleave',function(){this.classList.remove('drag-over');});
+    btn.addEventListener('drop',function(e){
+      e.preventDefault();this.classList.remove('drag-over');
+      if(!_dragSrc||this===_dragSrc)return;
+      var from=parseInt(_dragSrc.dataset.idx),to=parseInt(this.dataset.idx);
+      if(isNaN(from)||isNaN(to))return;
+      var moved=TCOLS.splice(from,1)[0];
+      TCOLS.splice(to,0,moved);
+      saveColPrefs();renderColToggles();renTbl();
+    });
+  });
+}
 function renTbl(){
   var st=(PG-1)*PER,sl=FLT.slice(st,st+PER),tot=Math.max(1,Math.ceil(FLT.length/PER));
+  var visCols=TCOLS.filter(function(tc){return!tc.hidden;});
   var h='<thead><tr><th style="width:24px">#</th>';
-  TCOLS.forEach(function(tc){var s=SC===tc.c;h+='<th class="'+(s?'srt':'')+'" onclick="doSort('+tc.c+')">'+tc.l+'<span style="margin-left:3px;font-size:9px;opacity:.5">'+(s?(SD===1?'▲':'▼'):'⇅')+'</span></th>';});
+  visCols.forEach(function(tc){var s=SC===tc.c;h+='<th class="'+(s?'srt':'')+'" onclick="doSort('+tc.c+')">'+tc.l+'<span style="margin-left:3px;font-size:9px;opacity:.5">'+(s?(SD===1?'▲':'▼'):'⇅')+'</span></th>';});
   h+='<th>→</th></tr></thead>';
   var b='<tbody>';
-  if(!sl.length){b+='<tr><td colspan="'+(TCOLS.length+2)+'"><div class="sbox"><div>No matching tasks</div></div></td></tr>';}
+  if(!sl.length){b+='<tr><td colspan="'+(visCols.length+2)+'"><div class="sbox"><div>No matching tasks</div></div></td></tr>';}
   else{sl.forEach(function(row,ri){
     var ri2=RAW.indexOf(row);
     b+='<tr class="'+(MI===ri2?'sr':'')+'" onclick="openMo('+ri2+')">';
     b+='<td class="rn">'+(st+ri+1)+'</td>';
-    TCOLS.forEach(function(tc){
+    visCols.forEach(function(tc){
       var val=v(row,tc.c);
       if(tc.f==='bdg')b+='<td class="td-badge"><span class="'+sC(val)+'">'+esc(val||'—')+'</span></td>';
       else if(tc.f==='ts')b+='<td class="tsc">'+esc(fTS(val))+'</td>';
